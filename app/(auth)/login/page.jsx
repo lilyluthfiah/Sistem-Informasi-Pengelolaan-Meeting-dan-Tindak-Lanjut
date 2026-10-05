@@ -39,15 +39,15 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="container" style={{ maxWidth: "420px", marginTop: "64px" }}>
-      <div className="card">
-        <h1 className="page-title">Login</h1>
-        <p className="page-subtitle">Sistem Informasi Pengelolaan Meeting</p>
+    <main className="login-page">
+      <div className="login-card">
+        <h1 className="login-title">Login</h1>
+        <p className="login-subtitle">Masuk ke Sistem Informasi Pengelolaan Meeting</p>
 
-        {error && <div className="error" style={{ marginBottom: "16px" }}>{error}</div>}
+        {error && <div className="error" style={{ marginBottom: "4px" }}>{error}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "12px" }}>
+        <form className="login-form" onSubmit={handleSubmit} noValidate>
+          <div className="form-group">
             <label className="label" htmlFor="email">Email</label>
             <input
               id="email"
@@ -57,10 +57,11 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="nama@email.com"
+              autoComplete="email"
             />
           </div>
 
-          <div style={{ marginBottom: "16px" }}>
+          <div className="form-group">
             <label className="label" htmlFor="password">Password</label>
             <input
               id="password"
@@ -70,11 +71,12 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 
           <button className="button" type="submit" disabled={isLoading}>
-            {isLoading ? "Memproses..." : "Masuk"}
+            {isLoading ? "Memproses..." : "Login"}
           </button>
         </form>
       </div>
