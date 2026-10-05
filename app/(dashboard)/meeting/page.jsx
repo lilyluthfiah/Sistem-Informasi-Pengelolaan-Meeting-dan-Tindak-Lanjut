@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma.js";
 
 const STATUS_BADGE_CLASS = {
   Terjadwal: "badge-info",
@@ -7,6 +6,57 @@ const STATUS_BADGE_CLASS = {
   Selesai: "badge-success",
   Dibatalkan: "badge-danger",
 };
+
+const SAMPLE_MEETINGS = [
+  {
+    id: "sample-1",
+    title: "Evaluasi Kinerja Tim Kuartal III",
+    date: new Date(2026, 8, 28),
+    time: "09:00",
+    location: "Ruang Rapat Utama",
+    status: "Selesai",
+  },
+  {
+    id: "sample-2",
+    title: "Rapat Koordinasi Proyek Sistem Informasi",
+    date: new Date(2026, 9, 1),
+    time: "10:00",
+    location: "Ruang Meeting A",
+    status: "Selesai",
+  },
+  {
+    id: "sample-3",
+    title: "Pembahasan Anggaran Operasional",
+    date: new Date(2026, 9, 5),
+    time: "13:30",
+    location: "Ruang Rapat Direksi",
+    status: "Berlangsung",
+  },
+  {
+    id: "sample-4",
+    title: "Perencanaan Sprint Pengembangan",
+    date: new Date(2026, 9, 7),
+    time: "09:30",
+    location: "Ruang Meeting B",
+    status: "Terjadwal",
+  },
+  {
+    id: "sample-5",
+    title: "Review Kebutuhan Pengguna",
+    date: new Date(2026, 9, 9),
+    time: "14:00",
+    location: "Ruang Kolaborasi",
+    status: "Terjadwal",
+  },
+  {
+    id: "sample-6",
+    title: "Presentasi Hasil dan Tindak Lanjut",
+    date: new Date(2026, 9, 12),
+    time: "11:00",
+    location: "Aula Lantai 2",
+    status: "Terjadwal",
+  },
+];
 
 function formatTanggal(date) {
   return new Intl.DateTimeFormat("id-ID", {
@@ -26,28 +76,22 @@ function getSearchQuery(searchParams) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-export default async function MeetingPage({ searchParams }) {
+export default function MeetingPage({ searchParams }) {
   const query = getSearchQuery(searchParams);
-
-  let meetings = [];
-  let loadError = false;
-
-  try {
-    meetings = await prisma.meeting.findMany({
-      where: query ? { title: { contains: query } } : {},
-      orderBy: [{ date: "desc" }, { id: "desc" }],
-    });
-  } catch (error) {
-    console.error("Gagal memuat data meeting:", error);
-    loadError = true;
-  }
+  const normalizedQuery = query.toLocaleLowerCase("id-ID");
+  const meetings = SAMPLE_MEETINGS.filter((meeting) =>
+    meeting.title.toLocaleLowerCase("id-ID").includes(normalizedQuery)
+  ).sort((first, second) => second.date.getTime() - first.date.getTime());
 
   return (
     <main className="container-wide">
       <div className="card">
         <h1 className="page-title">Daftar Meeting</h1>
         <p className="page-subtitle">
-          Daftar meeting yang tersimpan di database
+          Contoh tampilan daftar meeting
+        </p>
+        <p className="sample-data-notice">
+          Data dummy hanya untuk tampilan dan tidak terhubung ke database.
         </p>
 
         <form className="search-form" method="get" role="search">
@@ -64,11 +108,7 @@ export default async function MeetingPage({ searchParams }) {
           </button>
         </form>
 
-        {loadError ? (
-          <div className="error">
-            Gagal memuat data meeting. Silakan coba lagi.
-          </div>
-        ) : meetings.length === 0 ? (
+        {meetings.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon" aria-hidden="true">
               🗓️
@@ -78,8 +118,8 @@ export default async function MeetingPage({ searchParams }) {
             </p>
             <p className="empty-state-text">
               {query
-                ? `Tidak ada meeting dengan judul "${query}".`
-                : "Data meeting akan ditampilkan di sini setelah tersedia."}
+                ? `Tidak ada contoh meeting dengan judul "${query}".`
+                : "Belum ada data contoh meeting."}
             </p>
             {query && (
               <Link className="button button-secondary button-sm" href="/meeting">
@@ -117,12 +157,7 @@ export default async function MeetingPage({ searchParams }) {
                       </span>
                     </td>
                     <td className="table-action">
-                      <Link
-                        className="button-detail"
-                        href={`/meeting/${meeting.id}`}
-                      >
-                        Detail
-                      </Link>
+                      <span className="badge badge-neutral">Contoh</span>
                     </td>
                   </tr>
                 ))}
@@ -131,12 +166,10 @@ export default async function MeetingPage({ searchParams }) {
           </div>
         )}
 
-        {!loadError && (
-          <p className="table-count">
-            {meetings.length} meeting ditemukan
-            {query ? ` untuk "${query}"` : ""}
-          </p>
-        )}
+        <p className="table-count">
+          {meetings.length} contoh meeting ditemukan
+          {query ? ` untuk "${query}"` : ""}
+        </p>
       </div>
     </main>
   );
