@@ -5,11 +5,14 @@ export async function middleware(request) {
   const token = request.cookies.get("session")?.value;
   const { pathname } = request.nextUrl;
 
-  const isDashboardRoute = pathname.startsWith("/dashboard");
+  const protectedPrefixes = ["/dashboard", "/meeting"];
+  const isProtectedRoute = protectedPrefixes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
   const isLoginRoute = pathname === "/login";
 
-  // Proteksi /dashboard: harus ada token valid
-  if (isDashboardRoute) {
+  // Proteksi rute dashboard & meeting: harus ada token valid
+  if (isProtectedRoute) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -43,5 +46,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"],
+  matcher: ["/dashboard/:path*", "/meeting/:path*", "/login"],
 };

@@ -4,10 +4,11 @@ Fondasi MVP Sprint 1: Next.js App Router + React + MySQL + Prisma.
 
 ## Fitur Sprint 1
 - Login/logout (JWT httpOnly cookie, bcryptjs, jose)
-- Routing dasar Next.js App Router (+ middleware proteksi)
-- Database MySQL (Prisma, model User)
-- Dashboard setelah login
-- Clean code, tanpa data dummy, tanpa fitur Meeting/Tindak Lanjut
+- Routing dasar Next.js App Router (+ middleware proteksi `/dashboard` dan `/meeting`)
+- Database MySQL (Prisma, model User dan Meeting)
+- Dashboard setelah login (dengan sidebar navigasi)
+- Daftar Meeting (`/meeting`): data dari MySQL via Prisma, pencarian berdasarkan judul, empty state, link detail `/meeting/:id` (detail di Sprint berikutnya)
+- Clean code, tanpa data dummy, tanpa fitur Tindak Lanjut/Reporting/Notifikasi
 
 ## Prasyarat
 - Node.js >=18, npm, MySQL berjalan di localhost:3306 (XAMPP/Laragon/MySQL Community)
@@ -67,6 +68,14 @@ Buka http://localhost:3000
 - Berhasil -> redirect ke `/dashboard`
 - `POST /api/auth/logout` via tombol Logout
 - `GET /api/auth/me` cek session
+
+### 8. Tes Daftar Meeting (T-14)
+- Setelah login, klik menu **Meeting** di sidebar -> `GET /meeting`
+- Tabel menampilkan judul, tanggal, waktu, lokasi, status dari database
+- Kotak pencarian memfilter berdasarkan judul (query `?q=`)
+- Jika belum ada data, tampil empty state "Belum ada meeting"
+- Tombol **Detail** mengarah ke `/meeting/:id` (halaman detail dikerjakan di T-15)
+- Belum login -> `GET /meeting` redirect ke `/login` (middleware)
 
 ## Git
 Branch Sprint 1: `sprint-1-foundation` (jangan push ke main tanpa persetujuan)

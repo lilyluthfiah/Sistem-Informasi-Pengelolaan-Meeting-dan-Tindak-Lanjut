@@ -16,4 +16,13 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-// Sprint 2: Meeting, FollowUp akan ditambahkan di sini
+model Meeting {
+  id        Int      @id @default(autoincrement())
+  title     String
+  date      DateTime
+  time      String
+  location  String
+  status    String   @default("Terjadwal")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
